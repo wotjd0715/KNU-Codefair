@@ -11,7 +11,7 @@ class Map(object):
     def __init__(self):
         self.fire_place_num = []
         self.exit = [1, 3]  # 탈출구인 노드 num 들
-        self.all_node_num = 12
+        self.all_node_num = 21
         self.node = []  # 모든 노드들
         self.check = []
         self.all_node = []  # 모든 노드번호들 넣을곳 추후 탈출구 노드를 제외하고 화살표 방향을 정할때 씀
@@ -74,7 +74,9 @@ def find_linked_node(Node):  # 입력 Node와 연결된 노드 Num을 index_list
     return index_list
 
 
-def dijkstra(start, linked_node_list):  # 모든 노드간 가중치가 1, 이는 추후 바꿀수 있으며 모든 가중치가 1이기에 출발 노드에서 모든 노드까지의 거리 측정가능
+def dijkstra(start, linked_node_list):  
+    # 모든 노드간 가중치가 1
+    # 이는 추후 바꿀수 있으며 모든 가중치가 1이기에 출발 노드에서 모든 노드까지의 거리 측정가능
     distances = {node: float('inf') for node in range(84)}
     distances[start] = 0
 
@@ -99,7 +101,7 @@ def dijkstra(start, linked_node_list):  # 모든 노드간 가중치가 1, 이�
 def set_weight(node, exit):  # 다익스트라를 통해 탈출구에서 모든 노드까지의 거리를 구한후 비교해서 최솟값 넣기
     for e in exit:
         result = dijkstra(e, linked_node_list)
-        for i in range(0,map.all_node_num):
+        for i in range(0, map.all_node_num):
             node[i].set_distance(result[i])
 
 def fire_in_node(start_node_num, node, linked_node_list):
@@ -160,7 +162,7 @@ def fire_test(fire_node_num, send_node_num1, send_node_num2, node, linked_node_l
         substract = []
         node_list = []
         shortest_node_num = []
-        temp_exit_diret = 0
+        # temp_exit_diret = 0
 
         for j in linked_node_list[i]:
             node_list.append(j)
@@ -248,17 +250,17 @@ def create_sensor_map(length_file, width_file, stairs_file):
                     #     exit_node[sensor_num] = current_sensor
 
                     if prev_sensor is not None:
-                        if file_name == "width.txt":  # 가로 연결된 센서
+                        if file_name == "./width.txt":  # 가로 연결된 센서
                             current_sensor.left = prev_sensor
                             prev_sensor.right = current_sensor
                             current_sensor.direction[2] = 1
                             prev_sensor.direction[3] = 1
-                        elif file_name == "length.txt":  # 세로 연결된 센서
+                        elif file_name == "./length.txt":  # 세로 연결된 센서
                             current_sensor.forward = prev_sensor
                             prev_sensor.backward = current_sensor
                             current_sensor.direction[0] = 1
                             prev_sensor.direction[1] = 1
-                        elif file_name == "stairs.txt":  # 계단 센서
+                        elif file_name == "./stairs.txt":  # 계단 센서
                             current_sensor.down = prev_sensor
                             prev_sensor.up = current_sensor
                             current_sensor.direction[5] = 1
@@ -302,7 +304,7 @@ if __name__ == "__main__":
     for i in range(0,map.all_node_num):
         map.node.append(AddNode())
 
-    create_sensor_map('length.txt', 'width.txt', 'stairs.txt')
+    create_sensor_map('./length.txt', './width.txt', './stairs.txt')
 
     # 다익스트라 알고리즘
     # linked_node_list[인접노드를 찾을 노드 num] = [인접 node num들]
@@ -317,7 +319,9 @@ if __name__ == "__main__":
     for i in range(0,map.all_node_num):  # 각 노드들이 가진 거리들 출력
         map.now_distance.append(map.node[i].distance)
         print(i, ':', map.node[i].distance, end=" ")
-    print("")
+    print()
+
+
     # 화재전 노드 방향 연결
     for i in range(0,map.all_node_num):
         map.all_node.append(i)

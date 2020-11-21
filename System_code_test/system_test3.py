@@ -24,12 +24,14 @@ class Node (object):
         self.exit_diret = []
         self.exit_diret_num = []
         self.visited_place = []
+
     def set_index(self, num):
         self.index = num
 
     def set_distance(self, num):
         if(self.distance > num):
-            self.distance=num
+            self.distance = num
+
     def set_exit_diret_num(self, list):
         self.exit_diret_num = list
 
@@ -56,7 +58,7 @@ def find_linked_node(Node): # 입력 Node와 연결된 노드 Num을 index_list�
         index_list.append(Node.down.index)
     return index_list
 
-def dijkstra(start,linked_node_list): # 모든 노드간 가중치가 1, 이는 추후 바꿀수 있으며 모든 가중치가 1이기에 출발 노드에서 모든 노드까지의 거리 측정가능
+def dijkstra(start, linked_node_list): # 모든 노드간 가중치가 1, 이는 추후 바꿀수 있으며 모든 가중치가 1이기에 출발 노드에서 모든 노드까지의 거리 측정가능
     distances = {node: float('inf') for node in range(84)}
     distances[start] = 0
 
@@ -77,13 +79,13 @@ def dijkstra(start,linked_node_list): # 모든 노드간 가중치가 1, 이는 
                 heapq.heappush(queue, [distance, adjacent])
     return distances
 
-def set_weight(node,exit):# 다익스트라를 통해 탈출구에서 모든 노드까지의 거리를 구한후 비교해서 최솟값 넣기
+def set_weight(node, exit):# 다익스트라를 통해 탈출구에서 모든 노드까지의 거리를 구한후 비교해서 최솟값 넣기
     for e in exit:
         result = dijkstra(e, linked_node_list)
         for i in range(all_node_num):
             node[i].set_distance(result[i])
 
-def fire_test(fire_node_num,send_node_num1,send_node_num2,node,linked_node_list):
+def fire_test(fire_node_num, send_node_num1, send_node_num2, node, linked_node_list):
     queue = []
     del_list = []
     fire_start = fire_node_num
@@ -214,7 +216,7 @@ def create_sensor_map(length_file, width_file, stairs_file):
 
                     prev_sensor = current_sensor
 
-def find_exit(all_node,node, linked_node_list):
+def find_exit(all_node, node, linked_node_list):
     for i in all_node:
         substract = []
         shortest_node_num = []
@@ -249,7 +251,7 @@ if __name__ == "__main__":
         node.append(AddNode())
 
 
-    create_sensor_map('../length.txt', 'width.txt', 'stairs.txt')
+    create_sensor_map('length.txt', 'width.txt', 'stairs.txt')
 
 
 
@@ -287,11 +289,13 @@ if __name__ == "__main__":
     for i in range(all_node_num):
         print(i, '->', node[i].exit_diret)
     # #print("node21 visited_place", node[21].visited_place)
+    
     fire_test(11,11,11,node,linked_node_list)
     print("fire in 18")
     for i in range(all_node_num):
         print(i, '->', node[i].exit_diret)
     #print("node21 visited_place", node[21].visited_place)
+
     fire_test(3, 3, 3, node, linked_node_list)
     print("fire in 20")
     for i in range(all_node_num):
@@ -343,4 +347,3 @@ exit = 탈출구가 있는 노드
 해야하는것: distance가 작은값으로 방향 표시하게 해야함
            불이랑 연기 났을때 방향 표시가 바뀌게 해야함
 '''
-

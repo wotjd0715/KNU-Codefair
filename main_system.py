@@ -1,3 +1,4 @@
+
 import heapq
 import queue
 import time
@@ -24,27 +25,35 @@ class Map(object):
 knu = Map()
 count = -1
 
+firekey = []
+smokekey = []
+ledkey = []
+firename = []
+smokename = []
+ledname = []
+
 for i in range(0, 12):  # 노드 개수로 바꾸기
-
-    fires = 'node{0:>02d}.fire{0:>02d}'.format(i, i)
-    smokes = 'node{0:>02d}.smoke{0:>02d}'.format(i, i)
-    leds = 'node{0:>02d}.led{0:>02d}'.format(i, i)
-
-    firekey.append(fires)
-    smokekey.append(smokes)
-    ledkey.append(leds)
-
-    name_fire = 'fire{0:>02d}'.format(i, i)
-    name_smoke = 'smoke{0:>02d}'.format(i, i)
-    name_led = 'led{0:>02d}'.format(i, i)
-
-    firename.append(fires)
-    smokename.append(smokes)
-    ledname.append(leds)
-
-    globals()['fire{0:>02d}'.format(i, i)] = aio.feeds(fires)  # 연결
-    globals()['smoke{0:>02d}'.format(i, i)] = aio.feeds(smokes)
-    globals()['led{0:>02d}'.format(i, i)] = aio.feeds(leds)
+    pass
+    
+    # fires = f"node{0:>02d}.fire{0:>02d}".format(i, i)
+    # smokes = f"node{0:>02d}.smoke{0:>02d}".format(i, i)
+    # leds = f"node{0:>02d}.led{0:>02d}".format(i, i)
+    #
+    # firekey.append(fires)
+    # smokekey.append(smokes)
+    # ledkey.append(leds)
+    #
+    # name_fire = f"fire{0:>02d}".format(i, i)
+    # name_smoke = f"smoke{0:>02d}".format(i, i)
+    # name_led = f"led{0:>02d}".format(i, i)
+    #
+    # firename.append(fires)
+    # smokename.append(smokes)
+    # ledname.append(leds)
+    #
+    # globals()[f"fire{0:>02d}".format(i, i)] = aio.feeds(fires)  # 연결
+    # globals()[f"smoke{0:>02d}".format(i, i)] = aio.feeds(smokes)
+    # globals()[f"led{0:>02d}".format(i, i)] = aio.feeds(leds)
 
 
 class Node(object):
@@ -68,7 +77,7 @@ class Node(object):
         self.index = num
 
     def set_distance(self, num):
-        if (self.distance > num):
+        if self.distance > num:
             self.distance = num
 
     def set_exit_diret_num(self, list):
@@ -178,14 +187,12 @@ def fire_test(fire_node_num, send_node_num1, send_node_num2, node, linked_node_l
             if node[i].forward != None and node[i].forward.index in shortest_node_num:
                 if node[i].forward.index not in node[i].visited_place:
                     node[i].exit_diret += 32
-
             if node[i].backward != None and node[i].backward.index in shortest_node_num:
                 if node[i].backward.index not in node[i].visited_place:
                     node[i].exit_diret += 16
             if node[i].right != None and node[i].right.index in shortest_node_num:
                 if node[i].right.index not in node[i].visited_place:
                     node[i].exit_diret += 4
-
             if node[i].left != None and node[i].left.index in shortest_node_num:
                 if node[i].left.index not in node[i].visited_place:
                     node[i].exit_diret += 8
@@ -206,12 +213,11 @@ def fire_test(fire_node_num, send_node_num1, send_node_num2, node, linked_node_l
         fire_test(fire_start, send2, i, node, linked_node_list)
 
 
-def create_sensor_map(length_file, width_file, stairs_file):
+def create_sensor_map(files):
     """센서의 고유번호, 관계, 위치가 저장된 파일을 전달하면 그래프화 하고 sensor_map에 저장."""
     sensor_map = []
-    file_list = [length_file, width_file, stairs_file]
 
-    for file_name in file_list:
+    for file_name in files:
 
         with open(file_name) as sensor_file:
 
@@ -236,17 +242,17 @@ def create_sensor_map(length_file, width_file, stairs_file):
                     #     exit_node[sensor_num] = current_sensor
 
                     if prev_sensor is not None:
-                        if file_name == "/content/gdrive/My Drive/file01/width.txt":  # 가로 연결된 센서
+                        if file_name == "width.txt":  # 가로 연결된 센서
                             current_sensor.left = prev_sensor
                             prev_sensor.right = current_sensor
                             current_sensor.direction[2] = 1
                             prev_sensor.direction[3] = 1
-                        elif file_name == "/content/gdrive/My Drive/file01/length.txt":  # 세로 연결된 센서
+                        elif file_name == "length.txt":  # 세로 연결된 센서
                             current_sensor.forward = prev_sensor
                             prev_sensor.backward = current_sensor
                             current_sensor.direction[0] = 1
                             prev_sensor.direction[1] = 1
-                        elif file_name == "/content/gdrive/My Drive/file01/stairs.txt":  # 계단 센서
+                        elif file_name == "stairs.txt":  # 계단 센서
                             current_sensor.down = prev_sensor
                             prev_sensor.up = current_sensor
                             current_sensor.direction[5] = 1
@@ -290,7 +296,8 @@ if __name__ == "__main__":
     for i in range(map.all_node_num):
         map.node.append(AddNode())
 
-    create_sensor_map('length.txt', 'width.txt', 'stairs.txt')
+    files = ["length.txt", "width.txt", "stairs.txt"]
+    create_sensor_map(files)
 
     # 다익스트라 알고리즘
     # linked_node_list[인접노드를 찾을 노드 num] = [인접 node num들]
@@ -305,7 +312,9 @@ if __name__ == "__main__":
     for i in range(map.all_node_num):  # 각 노드들이 가진 거리들 출력
         map.now_distance.append(map.node[i].distance)
         print(i, ':', map.node[i].distance, end=" ")
-    print("")
+    print()
+
+
     # 화재전 노드 방향 연결
     for i in range(map.all_node_num):
         map.all_node.append(i)
@@ -316,6 +325,9 @@ if __name__ == "__main__":
     for i in range(map.all_node_num):
         print(i, '->', map.node[i].exit_diret)
     # print("node21 visited_place",node[21].visited_place)
+
+
+
 
     fire_test(6, 6, 6, map.node, linked_node_list)
     print("fire in 2")
@@ -343,11 +355,10 @@ if __name__ == "__main__":
     print(map.fire_place_num)
     #print("node21 visited_place", node[21].visited_place)
 
-'''
+
+"""
 node = 그래프 상의 모든 노드들 (object)
 linked_node_list = 모든 노드들이 각자 자신과 연결된 노드 번호를 가지고 있는 table 
 exit = 탈출구가 있는 노드 
-
-해야하는것: distance가 작은값으로 방향 표시하게 해야함
-           불이랑 연기 났을때 방향 표시가 바뀌게 해야함
-'''
+해야하는것: distance가 작은값으로 방향 표시하게 해야함 / 불이랑 연기 났을때 방향 표시가 바뀌게 해야함
+"""
